@@ -1,0 +1,44 @@
+# Qt build files
+build*/
+build-*/
+*.pro.user
+*.pro.user.*
+*.qmake.stash
+*.autosave
+*.moc
+Makefile*
+*.o
+*.obj
+*.so
+*.dll
+*.exe
+*.app
+*.a
+*.lib
+
+# CMake build folder
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+CTestTestfile.cmake
+Makefile
+
+# Qt Creator-specific
+*.creator.*
+*.qmlproject.user
+*.log
+*.tags
+*.workspace
+
+# User settings and OS files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Generated binary/output files
+bin/
+debug/
+release/
