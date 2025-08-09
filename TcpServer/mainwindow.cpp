@@ -82,17 +82,44 @@ void MainWindow::sendFilePushButtonClicked()
 void MainWindow::readSocket()
 {
     QTcpSocket *socket = reinterpret_cast<QTcpSocket*>(sender());
+    if (!socket) return;
+
     QByteArray readBuffer;
     QDataStream data(socket);
     data.startTransaction();
     data >> readBuffer;
     if(!data.commitTransaction()) return;
 
+    if (readBuffer.size() < 128) {
+        qDebug() << "Insufficient data received";
+        return;
+    }
+
     QString dataHeader = readBuffer.mid(0, 128);
 
-    QString fileName = dataHeader.split(',')[0].split(':')[1];
-    QString fileExt  = fileName.split(":")[1];
-    QString fileSize = dataHeader.split(',')[1].split(':')[1];
+    QStringList headerParts = dataHeader.split(',');
+    if (headerParts.size() < 2) {
+        qDebug() << "Invalid header format";
+        return;
+    }
+
+    QStringList fileNameParts = headerParts[0].split(':');
+    QStringList fileSizeParts = headerParts[1].split(':');
+
+    if (fileNameParts.size() < 2 || fileSizeParts.size() < 2) {
+        qDebug() << "Invalid header parts";
+        return;
+    }
+
+    QString fileName = fileNameParts[1].trimmed();
+    QString fileSize = fileSizeParts[1].trimmed();
+
+    if (fileName.isEmpty()) {
+        qDebug() << "Empty filename";
+        return;
+    }
+
+    fileName = fileName.replace(QChar('\0'), "");
 
     readBuffer = readBuffer.mid(128);
 
@@ -102,32 +129,60 @@ void MainWindow::readSocket()
     if(file.open(QIODevice::WriteOnly)) {
         file.write(readBuffer);
         file.close();
+        qDebug() << "File saved successfully:" << fileName;
+    } else {
+        qDebug() << "Failed to save file:" << file.errorString();
     }
 }
 
 void MainWindow::sendFile(QTcpSocket *socket, const QString &fileName)
 {
-    if(socket && socket->isOpen()){
-        QFile fileData(fileName);
-        if(fileData.open(QIODevice::ReadOnly)){
-            QFileInfo fileInfo(fileData);
-            QString fileNameWithExt(fileInfo.fileName());
-            QDataStream socketStream(socket);
-            QByteArray header;
-            header.prepend(("fileName:" + fileNameWithExt + ",filesize:" + QString::number(fileData.size())).toUtf8());
-            header.resize(128);
-
-            QByteArray data = fileData.readAll();
-            data.prepend(header);
-
-            socketStream << data;
-        }else {
-            qDebug() << fileName << " File not open!";
-        }
-    }else if(!socket) {
-        qDebug() << "Invalid socket!";
-    }else{
-        qDebug() << socket->socketDescriptor() << " socket not open!";
+    if(fileName.isEmpty()) {
+        qDebug() << "No file selected";
+        return;
     }
+
+    if(!socket || !socket->isOpen()){
+        qDebug() << "Socket is not available or not open";
+        return;
+    }
+
+    QFile fileData(fileName);
+    if(!fileData.open(QIODevice::ReadOnly)){
+        qDebug() << fileName << " File cannot be opened!";
+        return;
+    }
+
+    QFileInfo fileInfo(fileData);
+    QString fileNameWithExt(fileInfo.fileName());
+
+    qint64 fileSize = fileData.size();
+    if (fileSize <= 0) {
+        qDebug() << "File is empty or invalid";
+        fileData.close();
+        return;
+    }
+
+    QDataStream socketStream(socket);
+
+    QByteArray header;
+    QString headerString = QString("fileName:%1,filesize:%2").arg(fileNameWithExt).arg(fileSize);
+    header = headerString.toUtf8();
+
+    if (header.size() > 128) {
+        qDebug() << "Header too large";
+        fileData.close();
+        return;
+    }
+
+    header.resize(128);
+
+    QByteArray data = fileData.readAll();
+    data.prepend(header);
+
+    socketStream << data;
+
+    qDebug() << "File sent:" << fileNameWithExt << "Size:" << fileSize;
+    fileData.close();
 }
 

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>822</width>
     <height>600</height>
    </rect>
   </property>
@@ -47,9 +47,123 @@
      <rect>
       <x>20</x>
       <y>10</y>
-      <width>761</width>
-      <height>361</height>
+      <width>381</width>
+      <height>371</height>
      </rect>
+    </property>
+    <property name="textInteractionFlags">
+     <set>Qt::TextInteractionFlag::TextSelectableByKeyboard|Qt::TextInteractionFlag::TextSelectableByMouse</set>
+    </property>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>10</y>
+      <width>281</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayoutLabels" stretch="0,0,0,0">
+     <property name="leftMargin">
+      <number>10</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="ipLabel">
+       <property name="font">
+        <font>
+         <italic>true</italic>
+        </font>
+       </property>
+       <property name="text">
+        <string>ADRESS IP</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="ipLabelStatus">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="portLabel">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="font">
+        <font>
+         <italic>true</italic>
+        </font>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::Shape::NoFrame</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Shadow::Plain</enum>
+       </property>
+       <property name="text">
+        <string>PORT</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="portLabelStatus">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>40</y>
+      <width>281</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayoutTexts">
+     <item>
+      <widget class="QLineEdit" name="ipText"/>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="portText"/>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QPushButton" name="connectToHostButton">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>700</x>
+      <y>10</y>
+      <width>80</width>
+      <height>56</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>13</pointsize>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Connect</string>
+    </property>
+    <property name="autoDefault">
+     <bool>false</bool>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
     </property>
    </widget>
   </widget>
@@ -58,13 +172,20 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>822</width>
      <height>21</height>
     </rect>
    </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <tabstops>
+  <tabstop>textEditMessage</tabstop>
+  <tabstop>sendFileButton</tabstop>
+  <tabstop>ipText</tabstop>
+  <tabstop>portText</tabstop>
+  <tabstop>connectToHostButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
